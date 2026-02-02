@@ -1,0 +1,94 @@
+# NPU-IA Configuration
+# Assistente IA 100% Local - AMD Ryzen AI NPU
+
+# Configuração de Áudio
+audio:
+  sample_rate: 16000        # Taxa de amostragem (Hz)
+  vad_threshold: 0.01       # Sensibilidade do detector de voz
+  silence_ms: 1000          # Tempo de silêncio para parar de gravar (ms)
+  max_duration_ms: 30000    # Duração máxima de gravação (ms)
+
+# Speech-to-Text (Whisper)
+stt:
+  model_path: "models/whisper-medium.onnx"
+  language: "pt"
+  model_size: "medium"      # tiny, base, small, medium, large
+
+# Text-to-Speech (Piper)
+tts:
+  piper_path: "piper/piper.exe"
+  voice_path: "piper/voices/pt_BR-faber-medium.onnx"
+  voice_name: "pt_BR-faber-medium"
+  speak_rate: 1.0
+
+# Modelos LLM
+models:
+  load_all: false           # true = carrega todos na inicialização
+
+  phi:                      # Modelo rápido (sempre na memória)
+    name: "phi-3.5-mini"
+    path: "models/phi-3.5-mini.onnx"
+    tokenizer_path: "models/phi-3.5-mini-tokenizer.json"
+    max_tokens: 512
+    temperature: 0.7
+    system_prompt: |
+      Você é um assistente IA pessoal chamado NPU-IA.
+      Responda sempre em português brasileiro de forma concisa e útil.
+      Seja direto e eficiente.
+
+  llama:                    # Modelo para conversas longas
+    name: "llama-3.2-3b"
+    path: "models/llama-3.2-3b.onnx"
+    tokenizer_path: "models/llama-3.2-tokenizer.json"
+    max_tokens: 1024
+    temperature: 0.7
+    system_prompt: |
+      Você é um assistente inteligente e paciente.
+      Forneça explicações detalhadas quando solicitado.
+      Responda em português brasileiro.
+
+  qwen:                     # Modelo para ações
+    name: "qwen-2.5-3b"
+    path: "models/qwen-2.5-3b.onnx"
+    tokenizer_path: "models/qwen-2.5-tokenizer.json"
+    max_tokens: 512
+    temperature: 0.3        # Mais determinístico para ações
+    system_prompt: |
+      Você é um executor de ações. Converta comandos do usuário em JSON.
+      Retorne APENAS o JSON, sem explicações.
+
+  vision:                   # Modelo de visão
+    name: "minicpm-v"
+    path: "models/minicpm-v.onnx"
+    max_tokens: 256
+
+  coder:                    # Modelo de código
+    name: "qwen-coder-3b"
+    path: "models/qwen-coder-3b.onnx"
+    tokenizer_path: "models/qwen-coder-tokenizer.json"
+    max_tokens: 1024
+    temperature: 0.2        # Bem determinístico para código
+
+# Gerenciamento de Memória
+memory:
+  unload_after: 5m          # Descarrega modelos inativos após 5 minutos
+  persistent:               # Modelos que NUNCA descarrega
+    - whisper
+    - phi
+
+# Ações e Integrações
+actions:
+  allowed_commands:
+    - dir
+    - echo
+    - date
+    - time
+    - hostname
+    - whoami
+  email_enabled: true
+  browser_enabled: true
+
+# Credenciais Google (Gmail, Calendar)
+google:
+  credentials_path: "configs/google_credentials.json"
+  token_path: "configs/gmail_token.json"
