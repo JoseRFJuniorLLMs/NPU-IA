@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 )
@@ -542,5 +543,3 @@ func (ht *HabitTracker) load() error {
 	return nil
 }
 
-// import necessário
-import "strings"

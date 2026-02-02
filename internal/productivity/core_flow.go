@@ -3,6 +3,7 @@ package productivity
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 )
@@ -543,11 +544,7 @@ func contains(text string, words ...string) bool {
 	return false
 }
 
-// strings package placeholder
-var strings_pkg = struct{}{}
-
-func init() {
-	_ = strings_pkg
+// TTSInterface interface para TTS (evita import cíclico)
+type TTSInterface interface {
+	Speak(text string) error
 }
-
-import "strings"
